@@ -10,6 +10,7 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -19,36 +20,51 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class UserService {
 
+    Firestore dbFireStore = FirestoreClient.getFirestore();
+
     public String createUser(User user) throws ExecutionException, InterruptedException {
         Firestore dbFireStore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionsApiFuture = dbFireStore.collection(Constants.COLLECTION_USER).document(user.getName()).set(user);
+        ApiFuture<WriteResult> collectionsApiFuture = dbFireStore.collection(Constants.COLLECTION_USER).document(user.getId()).set(user);
 
         return  collectionsApiFuture.get().getUpdateTime().toString();
     }
 
     public String updateUser(User user) {
-        return "";
+        ApiFuture<WriteResult> collectionsApiFuture = dbFireStore.collection(Constants.COLLECTION_USER).document(user.getId()).set(user);
+        return user.getId();
     }
 
-    public User getUser(String documentId) throws ExecutionException, InterruptedException {
-
-        Firestore dbFireStore = FirestoreClient.getFirestore();
-
-        DocumentReference documentReference = dbFireStore.collection(Constants.COLLECTION_USER).document(documentId);
+    public User getUser(String Id) throws ExecutionException, InterruptedException {
+        DocumentReference documentReference = dbFireStore.collection(Constants.COLLECTION_USER).document(Id);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
         DocumentSnapshot document = future.get();
 
         User user;
         if(document.exists()){
             user = document.toObject(User.class);
+            user.setId(Id);
+
             return user;
         }
 
         return null;
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws ExecutionException, InterruptedException {
+        List<User> users = new ArrayList<>();
+        Iterable<DocumentReference> documentsReference = dbFireStore.collection(Constants.COLLECTION_USER).listDocuments();
 
-        return null;
+        for(DocumentReference documentReference: documentsReference){
+            ApiFuture<DocumentSnapshot> future = documentReference.get();
+            DocumentSnapshot document = future.get();
+
+            User user;
+            if(document.exists()){
+                user = document.toObject(User.class);
+                users.add(user);
+            }
+        }
+
+        return users;
     }
 }

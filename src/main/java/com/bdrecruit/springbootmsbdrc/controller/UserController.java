@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
  */
 
 @RestController
+
 public class UserController {
 
     public UserService userService;

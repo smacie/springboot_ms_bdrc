@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class User {
 
-    private String document_id;
+    private String id;
     private String name;
     private String gender;
     private String profession;
