@@ -46,7 +46,7 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public String updateUser(@RequestBody User user) throws InterruptedException, ExecutionException{
         return userService.updateUser(user);
     }
