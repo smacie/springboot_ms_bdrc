@@ -1,4 +1,4 @@
-package com.bdrecruit.springbootmsbdrc.controller;
+package com.bdrecruit.springbootmsbdrc.service;
 
 import com.bdrecruit.springbootmsbdrc.model.User;
 import com.bdrecruit.springbootmsbdrc.util.Constants;
